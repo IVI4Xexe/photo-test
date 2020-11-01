@@ -2,6 +2,7 @@ const puppeteer = require('puppeteer');
 const {installMouseHelper} = require('./install-mouse-helper');
 const helper = require('./helper');
 
+
 (async () => {
     const browser = await puppeteer.launch({headless: false});
     const page = await browser.newPage();
@@ -10,9 +11,15 @@ const helper = require('./helper');
         height: 1080,
         deviceScaleFactor: 1,
     })
+
+    const x = page.viewport().width / 2;
+    const y = page.viewport().height / 2;
+    const dist = 10;
+
+    //only for debugging!
     await installMouseHelper(page);
 
-    await page.goto('https://www.google.de/maps/@48.7832156,9.2561116,99a,35y,180h,39.45t/data=!3m1!1e3', {"waitUntil" : "networkidle0"});
+    await page.goto('https://www.google.de/maps/@48.7441421,9.3224667,115a,35y,45.88t/data=!3m1!1e3?hl=de', {"waitUntil" : "networkidle0"});
 
     await helper.consentToCoockies(page);
     await helper.switchTo3D(page);
@@ -23,40 +30,31 @@ const helper = require('./helper');
     //wait to load page
     await page.waitForTimeout(5000);
 
-    
-    const x = page.viewport().width / 2;
-    const y = page.viewport().height / 2;
-    const dist = 10;
-
-    for(var i = 0; i < 100; i++){
-        // for(j = 0; j<4; j++){
-        //     await page.evaluate(() => {
-        //         document.querySelector(".compass-clockwise-arrow").click();
-        //     });
-        //     await page.waitForTimeout(1000);
-        //     await page.screenshot({path: `screenshots/screenshot${i}-${j}.png`});
-        // }
-        await page.screenshot({path: `screenshots/screenshot${i}.png`});
-
-        var xMove = x;
-        var yMove = y;
+    for(var i = 0; i < 10; i++){
         var distMultiplier = Math.floor(i / 2) + 1;
+        for(var j = 0; j<distMultiplier; j++){
+            console.log(i,j);
+            var xMove = x;
+            var yMove = y;
+            
+            await page.screenshot({path: `screenshots/screenshot${i}-${j}.png`});
 
-        if(i % 4 == 0){
-            xMove += distMultiplier * dist;
-        }else if(i % 4 == 1){
-            yMove += distMultiplier * dist;
-        }else if(i % 4 == 2){
-            xMove -= distMultiplier * dist;
-        }else if(i % 4 == 3){
-            yMove -= distMultiplier * dist;
+            if(i % 4 == 0){
+                xMove += dist;
+            }else if(i % 4 == 1){
+                yMove += dist;
+            }else if(i % 4 == 2){
+                xMove -= dist;
+            }else if(i % 4 == 3){
+                yMove -= dist;
+            }
+    
+            await page.mouse.down();
+            await page.mouse.move(x, y);
+            await page.waitForTimeout(100);
+            await page.mouse.move(xMove, yMove);
+            await page.mouse.up();
         }
-
-        await page.mouse.down();
-        await page.mouse.move(x, y);
-        await page.mouse.move(xMove, yMove);
-        await page.mouse.up();
-        
     }
   
     await page.waitForTimeout(5000);

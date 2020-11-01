@@ -1,5 +1,4 @@
 module.exports = {
-    //Consent to Coockies...
     consentToCoockies: async function(page){
         const frames = await page.frames();
         const googleConsentFrame = frames.find(f => f.url().includes("consent.google"));
@@ -24,11 +23,11 @@ module.exports = {
         await page.evaluate(() => {
             document.querySelector(".searchbox-hamburger-container > button").click();
         });
-        await page.waitForTimeout(1000);
+        await page.waitForTimeout(2000);
         await page.evaluate(() => {
             document.querySelector(".widget-settings-earth-item button:nth-child(2)").click();
         });
-        await page.waitForTimeout(1000);
+        await page.waitForTimeout(2000);
     },
 
     removeIcons: async function(page){
