@@ -2,7 +2,8 @@ module.exports = {
     consentToCoockies: async function(page){
         const frames = await page.frames();
         const googleConsentFrame = frames.find(f => f.url().includes("consent.google"));
-        await (await googleConsentFrame.$("#introAgreeButton")).click();
+        if(googleConsentFrame !== undefined)
+            await (await googleConsentFrame.$("#introAgreeButton")).click();
     },
 
     switchTo3D: async function(page){
@@ -17,6 +18,15 @@ module.exports = {
             document.querySelector("#tilt > div > button").click();
         });
         await page.waitForTimeout(1000);
+    },
+
+    rotate: async function(page, rot){
+        for(var i = rot; i > 0; i--){
+            await page.evaluate(() => {
+                document.querySelector("#compass > div > button.compass-clockwise-arrow.widget-compass-sprite").click();
+            });
+            await page.waitForTimeout(1000);
+        }
     },
 
     removeLabels: async function(page){
