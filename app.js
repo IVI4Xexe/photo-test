@@ -1,6 +1,6 @@
 const puppeteer = require('puppeteer');
 const {installMouseHelper} = require('./install-mouse-helper');
-const helper = require('./helper');
+const helper = require('./maps-helper');
 
 
 (async () => {
