@@ -5,10 +5,10 @@ add a folder named "screenshots" !
 
 ## options:
 
-* --lat=[float]: latitude
-* --long=[float]: longitude
-* --debug=[bool: [true|false]]: show mouse in browser
-*  --mode=[string: [maps]]: use google maps
+* `--lat=[float]` latitude
+* `--long=[float]` longitude
+* `--debug=[bool: [true|false]]` show mouse in browser
+* `--mode=[string: [maps]]` use google maps
 
 
 ## example: 
