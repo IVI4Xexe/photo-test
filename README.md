@@ -1,9 +1,9 @@
 # photo-test
 ## options:
 
-* `--lat=[float]` latitude
-* `--long=[float]` longitude
-* `--debug=[bool: [true|false]]` show mouse in browser
+* `--lat=[float]` latitude, mandatory
+* `--long=[float]` longitude, mandatory
+* `--debug=[bool: [true|false]]` show mouse in browser, default: false
 * `--delay=[int]` seconds waiting to load google maps, default: 1
 * `--parallel=[int]` parallel browsers, default: 1 
 
