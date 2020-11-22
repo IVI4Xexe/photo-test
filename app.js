@@ -3,30 +3,22 @@ const {installMouseHelper} = require('./install-mouse-helper');
 const helper = require('./helper');
 const fs = require('fs').promises;
 const Options = require('./options');
+require('./extensions')
 const argv = require('minimist')(process.argv.slice(2));
-
-Object.defineProperty(Array.prototype, 'chunk', {
-    value: function(chunkSize) {
-      var R = [];
-      for (var i = 0; i < this.length; i += chunkSize)
-        R.push(this.slice(i, i + chunkSize));
-      return R;
-    }
-});
 
 (async () => {
     const delay = argv.delay != null ? parseInt(argv.delay) : 1;
     const parallel = argv.parallel != null ? parseInt(argv.parallel) : 1;
 
     const options = []
-    options.push(new Options(0, 20))
-    options.push(new Options(1, 20))
-    options.push(new Options(2, 20))
-    options.push(new Options(3, 20))
-    options.push(new Options(0, 20.1))
-    options.push(new Options(1, 20.1))
-    options.push(new Options(2, 20.1))
-    options.push(new Options(3, 20.1))
+    options.push(new Options(0, "20"))
+    options.push(new Options(1, "20"))
+    options.push(new Options(2, "20"))
+    options.push(new Options(3, "20"))
+    options.push(new Options(0, "20.1"))
+    options.push(new Options(1, "20.1"))
+    options.push(new Options(2, "20.1"))
+    options.push(new Options(3, "20.1"))
     const runsChunks = options.chunk(parallel);
 
     const directory = "screenshots";
@@ -78,7 +70,7 @@ async function excecuteRunAsync(options, delay){
             var xMove = x;
             var yMove = y;
             
-            await page.screenshot({path: `screenshots/screenshot${options.rot}-${i}-${j}.png`});
+            await page.screenshot({path: `screenshots/screenshot${options.index}-${i}-${j}.png`});
 
             if(i % 4 == 0){
                 xMove += dist;
