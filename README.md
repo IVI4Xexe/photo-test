@@ -1,8 +1,4 @@
 # photo-test
-
-add a folder named "screenshots" !
-
-
 ## options:
 
 * `--lat=[float]` latitude
