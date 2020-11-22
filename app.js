@@ -1,18 +1,47 @@
 const puppeteer = require('puppeteer');
 const {installMouseHelper} = require('./install-mouse-helper');
 const helper = require('./helper');
+const fs = require('fs').promises;
+const Options = require('./options');
 const argv = require('minimist')(process.argv.slice(2));
+
+Object.defineProperty(Array.prototype, 'chunk', {
+    value: function(chunkSize) {
+      var R = [];
+      for (var i = 0; i < this.length; i += chunkSize)
+        R.push(this.slice(i, i + chunkSize));
+      return R;
+    }
+});
 
 (async () => {
     const delay = argv.delay != null ? parseInt(argv.delay) : 1;
-    const rots = [0,1,2,3];
-    const promises = rots.map(rot => excecuteAsync(rot, delay));
+    const parallel = argv.parallel != null ? parseInt(argv.parallel) : 1;
 
-    await Promise.all(promises);    
+    const options = []
+    options.push(new Options(0, 20))
+    options.push(new Options(1, 20))
+    options.push(new Options(2, 20))
+    options.push(new Options(3, 20))
+    options.push(new Options(0, 20.1))
+    options.push(new Options(1, 20.1))
+    options.push(new Options(2, 20.1))
+    options.push(new Options(3, 20.1))
+    const runsChunks = options.chunk(parallel);
+
+    const directory = "screenshots";
+    await fs.rmdir(directory, { recursive: true })
+        .then(() => fs.mkdir(directory));
+
+    for(var runs of runsChunks){
+        var promises = runs.map(options => excecuteRunAsync(options, delay));
+        await Promise.all(promises); 
+    }
 })();
 
-async function excecuteAsync(rot, delay){
-    console.log(`promise ${rot} started`)
+async function excecuteRunAsync(options, delay){
+    console.log(`promise ${options.index} started`)
+
     const browser = await puppeteer.launch({headless: false});
     const page = await browser.newPage();
     page.setViewport({
@@ -29,14 +58,13 @@ async function excecuteAsync(rot, delay){
     const y = page.viewport().height / 2;
     const dist = 50;
 
-    //const url = `https://www.google.de/maps/@${argv.lat},${argv.long},115a,35y,45.88t/data=!3m1!1e3?hl=de`;
-    const url = `https://www.google.de/maps/@${argv.lat},${argv.long},${20}z/data=!3m1!1e3?hl=de`;
+    const url = `https://www.google.de/maps/@${argv.lat},${argv.long},${options.zoom}z/data=!3m1!1e3?hl=de`;
     await page.goto(url, {"waitUntil" : "networkidle0"});
 
     await helper.consentToCoockies(page);
     await helper.switchTo3D(page);
     await helper.tiltView(page);
-    await helper.rotate(page, rot);
+    await helper.rotate(page, options.rot);
     await helper.removeLabels(page);
     await helper.removeIcons(page);
 
@@ -50,7 +78,7 @@ async function excecuteAsync(rot, delay){
             var xMove = x;
             var yMove = y;
             
-            await page.screenshot({path: `screenshots/screenshot${rot}-${i}-${j}.png`});
+            await page.screenshot({path: `screenshots/screenshot${options.rot}-${i}-${j}.png`});
 
             if(i % 4 == 0){
                 xMove += dist;
@@ -72,7 +100,7 @@ async function excecuteAsync(rot, delay){
 
     await browser.close();
 
-    console.log(`promise ${rot} returns`)
+    console.log(`promise ${options.index} returns`)
 
     return;
 };
