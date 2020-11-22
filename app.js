@@ -4,7 +4,6 @@ const maps = require('./maps');
 const argv = require('minimist')(process.argv.slice(2));
 
 (async () => {
-    //console.log(argv);
     const browser = await puppeteer.launch({headless: false});
     const page = await browser.newPage();
     page.setViewport({
@@ -19,10 +18,9 @@ const argv = require('minimist')(process.argv.slice(2));
 
     //Mode
     switch (argv.mode) {
-        case 'maps':
-            await maps.execute(page, argv);
-            break;
+        case 'maps':           
         default:
+            await maps.execute(page, argv);
             break;
     }
     
