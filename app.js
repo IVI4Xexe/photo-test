@@ -13,13 +13,13 @@ const argv = require('minimist')(process.argv.slice(2));
     const heightMax = argv.heightMax != null ? parseFloat(argv.heightMax) : 20;
     const heightStep = argv.heightStep != null ? parseFloat(argv.heightStep) : 0.1;
     const topDown = argv.topDown == "true";
-    const angleStep = argv.angleStep != null ? parseFloat(argv.angleStep) : 4;
+    const rotationStep = argv.rotationStep != null ? parseFloat(argv.rotationStep) : 4;
 
 
 
     const options = []
     for(var height = heightMin; height <= heightMax; height+= heightStep){
-        for(var step = 0; step < angleStep; step++){
+        for(var step = 0; step < rotationStep; step++){
             options.push(new Options(step, height.toString()))
         }
         if(topDown)
@@ -33,12 +33,12 @@ const argv = require('minimist')(process.argv.slice(2));
         .then(() => fs.mkdir(directory));
 
     for(var runs of runsChunks){
-        var promises = runs.map(options => excecuteRunAsync(options, delay, angleStep));
+        var promises = runs.map(options => excecuteRunAsync(options, delay, rotationStep));
         await Promise.all(promises); 
     }
 })();
 
-async function excecuteRunAsync(options, delay, angleStep){
+async function excecuteRunAsync(options, delay, rotationStep){
     console.log(`promise ${options.index} started`)
 
     const browser = await puppeteer.launch({headless: false});
@@ -65,7 +65,7 @@ async function excecuteRunAsync(options, delay, angleStep){
     await helper.removeLabels(page);
     if(options.rot != null){
         await helper.tiltView(page);
-        await helper.rotate(page, options.rot, angleStep);
+        await helper.rotate(page, options.rot, rotationStep);
     }
     
     await helper.removeIcons(page);

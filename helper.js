@@ -20,11 +20,11 @@ module.exports = {
         await page.waitForTimeout(1000);
     },
 
-    rotate: async function(page, rot, angleStep){
+    rotate: async function(page, rot, rotationStep){
         const x = page.viewport().width / 2;
         const y = page.viewport().height / 2;
 
-        const step = 1940 / angleStep;
+        const step = 1940 / rotationStep;
 
         await page.mouse.move(x, y);
         await page.keyboard.down('Control');

@@ -10,7 +10,7 @@
 * `--heightMax=[float]` max height, default: 20.0
 * `--heightStep=[float]` iteration steps between height, default: 0.1
 * `--topDown=[true|false]` include top down view, default: false
-* `--angleStep=[int]` angle = 360° / angleStep; default: 4
+* `--rotationStep=[int]` angle = 360° / rotationStep; default: 4
 
 
 ## example: 
