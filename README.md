@@ -11,6 +11,7 @@
 * `--heightStep=[float]` iteration steps between height, default: 0.1
 * `--topDown=[true|false]` include top down view, default: false
 * `--rotationStep=[int]` angle = 360° / rotationStep; default: 4
+* `--shellEdge=[int]` edges on shell, higher number means more screenshots, default: 10
 
 
 ## example: 

@@ -14,6 +14,7 @@ const argv = require('minimist')(process.argv.slice(2));
     const heightStep = argv.heightStep != null ? parseFloat(argv.heightStep) : 0.1;
     const topDown = argv.topDown == "true";
     const rotationStep = argv.rotationStep != null ? parseFloat(argv.rotationStep) : 4;
+    const shellEdge = argv.shellEdge != null ? parseFloat(argv.shellEdge) : 10;
 
 
 
@@ -33,12 +34,12 @@ const argv = require('minimist')(process.argv.slice(2));
         .then(() => fs.mkdir(directory));
 
     for(var runs of runsChunks){
-        var promises = runs.map(options => excecuteRunAsync(options, delay, rotationStep));
+        var promises = runs.map(options => excecuteRunAsync(options, delay, rotationStep, shellEdge));
         await Promise.all(promises); 
     }
 })();
 
-async function excecuteRunAsync(options, delay, rotationStep){
+async function excecuteRunAsync(options, delay, rotationStep, shellEdge){
     console.log(`promise ${options.index} started`)
 
     const browser = await puppeteer.launch({headless: false});
@@ -73,7 +74,7 @@ async function excecuteRunAsync(options, delay, rotationStep){
     //wait to load page
     await page.waitForTimeout(1000 * delay);
 
-    for(var i = 0; i < 10; i++){
+    for(var i = 0; i < shellEdge; i++){
         var distMultiplier = Math.floor(i / 2) + 1;
         for(var j = 0; j<distMultiplier; j++){
             
