@@ -6,6 +6,10 @@
 * `--debug=[bool: [true|false]]` show mouse in browser, default: false
 * `--delay=[int]` seconds waiting to load google maps, default: 1
 * `--parallel=[int]` parallel browsers, default: 1 
+* `--heightMin=[float]` min height, default: 20.0
+* `--heightMax=[float]` max height, default: 20.0
+* `--heightStep=[float]` iteration steps between height, default: 0.1
+* `--topDown=[true|false]` include top down view, default: false
 
 
 ## example: 

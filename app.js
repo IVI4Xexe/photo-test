@@ -9,16 +9,23 @@ const argv = require('minimist')(process.argv.slice(2));
 (async () => {
     const delay = argv.delay != null ? parseInt(argv.delay) : 1;
     const parallel = argv.parallel != null ? parseInt(argv.parallel) : 1;
+    const heightMin = argv.heightMin != null ? parseFloat(argv.heightMin) : 20;
+    const heightMax = argv.heightMax != null ? parseFloat(argv.heightMax) : 20;
+    const heightStep = argv.heightStep != null ? parseFloat(argv.heightStep) : 0.1;
+    const topDown = argv.topDown == "true"
+
+
 
     const options = []
-    options.push(new Options(0, "20"))
-    options.push(new Options(1, "20"))
-    options.push(new Options(2, "20"))
-    options.push(new Options(3, "20"))
-    options.push(new Options(0, "20.1"))
-    options.push(new Options(1, "20.1"))
-    options.push(new Options(2, "20.1"))
-    options.push(new Options(3, "20.1"))
+    for(var height = heightMin; height <= heightMax; height+= heightStep){
+        options.push(new Options(0, height.toString()))
+        options.push(new Options(1, height.toString()))
+        options.push(new Options(2, height.toString()))
+        options.push(new Options(3, height.toString()))
+        if(topDown)
+            options.push(new Options(null, height.toString()))
+    }
+    
     const runsChunks = options.chunk(parallel);
 
     const directory = "screenshots";
@@ -54,9 +61,11 @@ async function excecuteRunAsync(options, delay){
     await page.goto(url, {"waitUntil" : "networkidle0"});
 
     await helper.consentToCoockies(page);
-    await helper.switchTo3D(page);
-    await helper.tiltView(page);
-    await helper.rotate(page, options.rot);
+    if(options.rot != null){
+        await helper.switchTo3D(page);
+        await helper.tiltView(page);
+        await helper.rotate(page, options.rot);
+    }
     await helper.removeLabels(page);
     await helper.removeIcons(page);
 

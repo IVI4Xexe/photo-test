@@ -1,8 +1,8 @@
 class Options{
     constructor(rot, zoom = 20){
         this.index = IndexHelper.getIndex()
-        this.rot = rot;
-        this.zoom = zoom;
+        this.rot = rot;                     //null = top down
+        this.zoom = zoom;                   
     }
 }
 
