@@ -20,20 +20,30 @@ module.exports = {
         await page.waitForTimeout(1000);
     },
 
-    rotate: async function(page, rot){
-        for(var i = rot; i > 0; i--){
-            await page.evaluate(() => {
-                document.querySelector("#compass > div > button.compass-clockwise-arrow.widget-compass-sprite").click();
-            });
-            await page.waitForTimeout(1000);
-        }
+    rotate: async function(page, rot, angleStep){
+        const x = page.viewport().width / 2;
+        const y = page.viewport().height / 2;
+
+        const step = 1940 / angleStep;
+
+        await page.mouse.move(x, y);
+        await page.keyboard.down('Control');
+        await page.mouse.down();
+        await page.waitForTimeout(100);
+        await page.mouse.move(x + step * rot, y,{steps: 100});
+        await page.mouse.up();
+
+        await page.keyboard.up('Control');
+
+        await page.waitForTimeout(1000);
     },
 
     removeLabels: async function(page){
+        await page.waitForSelector(".searchbox-hamburger-container > button")
         await page.evaluate(() => {
             document.querySelector(".searchbox-hamburger-container > button").click();
         });
-        await page.waitForTimeout(2000);
+        await page.waitForSelector(".widget-settings-earth-item button:nth-child(2)")
         await page.evaluate(() => {
             document.querySelector(".widget-settings-earth-item button:nth-child(2)").click();
         });

@@ -12,16 +12,16 @@ const argv = require('minimist')(process.argv.slice(2));
     const heightMin = argv.heightMin != null ? parseFloat(argv.heightMin) : 20;
     const heightMax = argv.heightMax != null ? parseFloat(argv.heightMax) : 20;
     const heightStep = argv.heightStep != null ? parseFloat(argv.heightStep) : 0.1;
-    const topDown = argv.topDown == "true"
+    const topDown = argv.topDown == "true";
+    const angleStep = argv.angleStep != null ? parseFloat(argv.angleStep) : 4;
 
 
 
     const options = []
     for(var height = heightMin; height <= heightMax; height+= heightStep){
-        options.push(new Options(0, height.toString()))
-        options.push(new Options(1, height.toString()))
-        options.push(new Options(2, height.toString()))
-        options.push(new Options(3, height.toString()))
+        for(var step = 0; step < angleStep; step++){
+            options.push(new Options(step, height.toString()))
+        }
         if(topDown)
             options.push(new Options(null, height.toString()))
     }
@@ -33,12 +33,12 @@ const argv = require('minimist')(process.argv.slice(2));
         .then(() => fs.mkdir(directory));
 
     for(var runs of runsChunks){
-        var promises = runs.map(options => excecuteRunAsync(options, delay));
+        var promises = runs.map(options => excecuteRunAsync(options, delay, angleStep));
         await Promise.all(promises); 
     }
 })();
 
-async function excecuteRunAsync(options, delay){
+async function excecuteRunAsync(options, delay, angleStep){
     console.log(`promise ${options.index} started`)
 
     const browser = await puppeteer.launch({headless: false});
@@ -62,11 +62,12 @@ async function excecuteRunAsync(options, delay){
 
     await helper.consentToCoockies(page);
     await helper.switchTo3D(page);
+    await helper.removeLabels(page);
     if(options.rot != null){
         await helper.tiltView(page);
-        await helper.rotate(page, options.rot);
+        await helper.rotate(page, options.rot, angleStep);
     }
-    await helper.removeLabels(page);
+    
     await helper.removeIcons(page);
 
     //wait to load page
