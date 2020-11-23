@@ -61,8 +61,8 @@ async function excecuteRunAsync(options, delay){
     await page.goto(url, {"waitUntil" : "networkidle0"});
 
     await helper.consentToCoockies(page);
+    await helper.switchTo3D(page);
     if(options.rot != null){
-        await helper.switchTo3D(page);
         await helper.tiltView(page);
         await helper.rotate(page, options.rot);
     }
