@@ -1,6 +1,7 @@
 const puppeteer = require('puppeteer');
 const {installMouseHelper} = require('./install-mouse-helper');
 const helper = require('./helper');
+const debugOptions = require('./debug-options');
 const fs = require('fs').promises;
 const Options = require('./options');
 require('./extensions')
@@ -15,8 +16,6 @@ const argv = require('minimist')(process.argv.slice(2));
     const topDown = argv.topDown == "true";
     const rotationStep = argv.rotationStep != null ? parseFloat(argv.rotationStep) : 4;
     const shellEdge = argv.shellEdge != null ? parseFloat(argv.shellEdge) : 10;
-
-
 
     const options = []
     for(var height = heightMin; height <= heightMax; height+= heightStep){
@@ -33,14 +32,19 @@ const argv = require('minimist')(process.argv.slice(2));
     await fs.rmdir(directory, { recursive: true })
         .then(() => fs.mkdir(directory));
 
+    if(argv.debug == "true"){
+        let filehandle = await fs.open("temp.md", "w+");
+        await filehandle.truncate();
+    }
+
     for(var runs of runsChunks){
-        var promises = runs.map(options => excecuteRunAsync(options, delay, rotationStep, shellEdge));
+        var promises = runs.map(option => excecuteRunAsync(option, delay, rotationStep, shellEdge, options.length));
         await Promise.all(promises); 
     }
 })();
 
-async function excecuteRunAsync(options, delay, rotationStep, shellEdge){
-    console.log(`promise ${options.index} started`)
+async function excecuteRunAsync(options, delay, rotationStep, shellEdge, promisesLength){
+    console.log(`promise ${options.index + 1}/${promisesLength} started`)
 
     const browser = await puppeteer.launch({headless: false});
     const page = await browser.newPage();
@@ -51,9 +55,11 @@ async function excecuteRunAsync(options, delay, rotationStep, shellEdge){
     })
 
     //debug Mode
-    if(argv.debug == "true")
+    if(argv.debug == "true"){
         await installMouseHelper(page);
-
+        var debug = new debugOptions();
+    }
+    
     const x = page.viewport().width / 2;
     const y = page.viewport().height / 2;
     const dist = 50;
@@ -73,6 +79,9 @@ async function excecuteRunAsync(options, delay, rotationStep, shellEdge){
 
     //wait to load page
     await page.waitForTimeout(1000 * delay);
+
+    if(debug != null)
+        debug.update(page.url());
 
     for(var i = 0; i < shellEdge; i++){
         var distMultiplier = Math.floor(i / 2) + 1;
@@ -98,12 +107,15 @@ async function excecuteRunAsync(options, delay, rotationStep, shellEdge){
             await page.waitForTimeout(100);
             await page.mouse.move(xMove, yMove);
             await page.mouse.up();
+
+            if(debug != null)
+                debug.update(page.url());
         }
     }
 
     await browser.close();
 
-    console.log(`promise ${options.index} returns`)
+    console.log(`promise ${options.index + 1} returns`)
 
     return;
 };

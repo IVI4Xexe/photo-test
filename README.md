@@ -3,7 +3,7 @@
 
 * `--lat=[float]` latitude, mandatory
 * `--long=[float]` longitude, mandatory
-* `--debug=[bool: [true|false]]` show mouse in browser, default: false
+* `--debug=[bool: [true|false]]` show mouse in browser and log shell edge movement difference in ./temp.md, default: false
 * `--delay=[int]` seconds waiting to load google maps, default: 1
 * `--parallel=[int]` parallel browsers, default: 1 
 * `--heightMin=[float]` min height, default: 20.0
