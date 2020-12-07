@@ -10,20 +10,23 @@ const argv = require('minimist')(process.argv.slice(2));
 (async () => {
     const delay = argv.delay != null ? parseInt(argv.delay) : 1;
     const parallel = argv.parallel != null ? parseInt(argv.parallel) : 1;
-    const heightMin = argv.heightMin != null ? parseFloat(argv.heightMin) : 20;
-    const heightMax = argv.heightMax != null ? parseFloat(argv.heightMax) : 20;
+    const heightMin = argv.heightMin != null ? parseFloat(argv.heightMin) : 20.0;
+    const heightMax = argv.heightMax != null ? parseFloat(argv.heightMax) : 20.0;
     const heightStep = argv.heightStep != null ? parseFloat(argv.heightStep) : 0.1;
     const topDown = argv.topDown == "true";
-    const rotationStep = argv.rotationStep != null ? parseFloat(argv.rotationStep) : 4;
-    const shellEdge = argv.shellEdge != null ? parseFloat(argv.shellEdge) : 10;
+    const rotationStep = argv.rotationStep != null ? parseInt(argv.rotationStep) : 4;
+    const tiltStep = argv.tiltStep != null ? parseInt(argv.tiltStep) : 0;
+    const shellEdge = argv.shellEdge != null ? parseInt(argv.shellEdge) : 10;
 
     const options = []
     for(var height = heightMin; height <= heightMax; height+= heightStep){
         for(var step = 0; step < rotationStep; step++){
-            options.push(new Options(step, height.toString()))
+            for(var tilt = -tiltStep; tilt <= tiltStep; tilt++){
+                options.push(new Options(step, tilt, height.toString()))
+            }
         }
         if(topDown)
-            options.push(new Options(null, height.toString()))
+            options.push(new Options(null, null, height.toString()))
     }
     
     const runsChunks = options.chunk(parallel);
@@ -38,12 +41,12 @@ const argv = require('minimist')(process.argv.slice(2));
     }
 
     for(var runs of runsChunks){
-        var promises = runs.map(option => excecuteRunAsync(option, delay, rotationStep, shellEdge, options.length));
+        var promises = runs.map(option => excecuteRunAsync(option, delay, rotationStep, tiltStep, shellEdge, options.length));
         await Promise.all(promises); 
     }
 })();
 
-async function excecuteRunAsync(options, delay, rotationStep, shellEdge, promisesLength){
+async function excecuteRunAsync(options, delay, rotationStep, tiltStep, shellEdge, promisesLength){
     console.log(`promise ${options.index + 1}/${promisesLength} started`)
 
     const browser = await puppeteer.launch({headless: false});
@@ -74,6 +77,9 @@ async function excecuteRunAsync(options, delay, rotationStep, shellEdge, promise
         await helper.tiltView(page);
         await helper.rotate(page, options.rot, rotationStep);
     }
+    if(options.tilt != null){
+        await helper.tilt(page, options.tilt, tiltStep);
+    }
     
     await helper.removeIcons(page);
 
@@ -102,10 +108,9 @@ async function excecuteRunAsync(options, delay, rotationStep, shellEdge, promise
                 yMove -= dist;
             }
     
-            await page.mouse.down();
             await page.mouse.move(x, y);
-            await page.waitForTimeout(100);
-            await page.mouse.move(xMove, yMove);
+            await page.mouse.down();
+            await page.mouse.move(xMove, yMove, {steps: 100});
             await page.mouse.up();
 
             if(debug != null)

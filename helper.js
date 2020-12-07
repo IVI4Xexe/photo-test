@@ -38,6 +38,24 @@ module.exports = {
         await page.waitForTimeout(1000);
     },
 
+    tilt: async function(page, tilt, tiltStep){
+        const x = page.viewport().width / 2;
+        const y = page.viewport().height / 2;
+        const step = parseInt(200 / tiltStep + 1);
+
+        await page.mouse.move(x, y);
+        await page.keyboard.down('Control');
+        await page.mouse.down();
+        await page.waitForTimeout(100);
+        await page.mouse.move(x, y + step * tilt,{steps: 100});
+        await page.mouse.up();
+
+        await page.keyboard.up('Control');
+
+        await page.waitForTimeout(1000);
+        
+    },
+
     removeLabels: async function(page){
         await page.waitForSelector(".searchbox-hamburger-container > button")
         await page.evaluate(() => {

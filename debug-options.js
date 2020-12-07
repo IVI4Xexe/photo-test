@@ -23,9 +23,9 @@ class DebugOptions{
             var latDiff = abs(this.latNew - this.latOld);
             var longDiff = abs(this.longNew - this.longOld);
             if(latDiff != 0)
-                await writeToDebugFile(latDiff);
+                await writeToDebugFile(latDiff.toFixed(7).replace(".",","));
             if(longDiff != 0)
-                await writeToDebugFile(longDiff);
+                await writeToDebugFile(longDiff.toFixed(7).replace(".",","));
         }
     }
 }
