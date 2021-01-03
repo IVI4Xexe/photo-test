@@ -21,6 +21,8 @@ module.exports = {
     },
 
     rotate: async function(page, rot, rotationStep){
+        if(rot===0)
+            return;
         const x = page.viewport().width / 2;
         const y = page.viewport().height / 2;
 
@@ -39,6 +41,8 @@ module.exports = {
     },
 
     tilt: async function(page, tilt, tiltStep){
+        if(tilt===0)
+            return;
         const x = page.viewport().width / 2;
         const y = page.viewport().height / 2;
         const step = parseInt(200 / tiltStep + 1);
@@ -56,11 +60,13 @@ module.exports = {
         
     },
 
+
     removeLabels: async function(page){
         await page.waitForSelector(".searchbox-hamburger-container > button")
         await page.evaluate(() => {
             document.querySelector(".searchbox-hamburger-container > button").click();
         });
+        await page.waitForTimeout(1000);
         await page.waitForSelector(".widget-settings-earth-item button:nth-child(2)")
         await page.evaluate(() => {
             document.querySelector(".widget-settings-earth-item button:nth-child(2)").click();
