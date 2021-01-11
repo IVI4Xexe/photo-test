@@ -7,6 +7,7 @@ module.exports = {
     },
 
     switchTo3D: async function(page){
+        page.waitForSelector("#globe-toggle > div > button")
         await page.evaluate(() => {
             document.querySelector("#globe-toggle > div > button").click();
         });
@@ -14,6 +15,7 @@ module.exports = {
     },
 
     tiltView: async function(page){
+        await page.waitForSelector("#tilt > div > button")
         await page.evaluate(() => {
             document.querySelector("#tilt > div > button").click();
         });
