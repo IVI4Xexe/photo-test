@@ -18,6 +18,7 @@ const argv = require('minimist')(process.argv.slice(2));
         const rotationStep = argv.rotationStep != null && parseInt(argv.rotationStep) >= 0 ? parseInt(argv.rotationStep) : 4;
         const tiltStep = argv.tiltStep != null && parseInt(argv.tiltStep) >= 0 ? parseInt(argv.tiltStep) : 0;
         const shellEdge = argv.shellEdge != null && parseInt(argv.shellEdge) >= 0 ? parseInt(argv.shellEdge) : 10;
+        const shellEdgeStep = argv.shellEdgeStep != null && parseInt(argv.shellEdgeStep) >= 0 ? parseInt(argv.shellEdgeStep) : 50;
     
         const options = []
         for(var height = heightMin; height <= heightMax; height+= heightStep){
@@ -42,7 +43,7 @@ const argv = require('minimist')(process.argv.slice(2));
         }
     
         for(var runs of runsChunks){
-            var promises = runs.map(option => excecuteRunAsync(option, delay, rotationStep, tiltStep, shellEdge, options.length));
+            var promises = runs.map(option => excecuteRunAsync(option, delay, rotationStep, tiltStep, shellEdge, shellEdgeStep, options.length));
             await Promise.all(promises); 
         }
     }catch(e){
@@ -50,7 +51,7 @@ const argv = require('minimist')(process.argv.slice(2));
     }
 })();
 
-async function excecuteRunAsync(options, delay, rotationStep, tiltStep, shellEdge, promisesLength){
+async function excecuteRunAsync(options, delay, rotationStep, tiltStep, shellEdge, shellEdgeStep, promisesLength){
     try{
         console.log(`promise ${options.index + 1}/${promisesLength} started`)
 
@@ -70,7 +71,6 @@ async function excecuteRunAsync(options, delay, rotationStep, tiltStep, shellEdg
         
         const x = page.viewport().width / 2;
         const y = page.viewport().height / 2;
-        const dist = 50;
     
         const url = `https://www.google.de/maps/@${argv.lat},${argv.long},${options.zoom}z/data=!3m1!1e3?hl=de`;
         await page.goto(url, {"waitUntil" : "networkidle0"});
@@ -103,13 +103,13 @@ async function excecuteRunAsync(options, delay, rotationStep, tiltStep, shellEdg
                 await page.screenshot({path: `screenshots/screenshot${options.index}-${i}-${j}.png`});
     
                 if(i % 4 == 0){
-                    xMove += dist;
+                    xMove += shellEdgeStep;
                 }else if(i % 4 == 1){
-                    yMove += dist;
+                    yMove += shellEdgeStep;
                 }else if(i % 4 == 2){
-                    xMove -= dist;
+                    xMove -= shellEdgeStep;
                 }else if(i % 4 == 3){
-                    yMove -= dist;
+                    yMove -= shellEdgeStep;
                 }
         
                 await page.mouse.move(x, y);
@@ -122,6 +122,8 @@ async function excecuteRunAsync(options, delay, rotationStep, tiltStep, shellEdg
             }
         }
     
+        let pages = await browser.pages();
+        await Promise.all(pages.map(page =>page.close()));
         await browser.close();
     
         console.log(`promise ${options.index + 1} returns`)
