@@ -8,7 +8,7 @@ module.exports = {
     },
 
     switchTo3D: async function(page){
-        page.waitForSelector("#globe-toggle > div > button")
+        await page.waitForSelector("#globe-toggle > div > button")
         await page.evaluate(() => {
             document.querySelector("#globe-toggle > div > button").click();
         });
