@@ -13,6 +13,7 @@
 * `--rotationStep=[uint]` number of equaly spaced horizontal rotations; default: 4
 * `--tiltStep=[uint]` number of additional equaly spaced vertical tilts in both directions; default: 0
 * `--shellEdge=[uint]` edges on shell, higher number means more screenshots, default: 10
+* `--shellEdgeStep=[uint]` stepsize in px: default: 50
 
 
 ## example: 
