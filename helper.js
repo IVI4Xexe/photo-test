@@ -4,6 +4,7 @@ module.exports = {
         const googleConsentFrame = frames.find(f => f.url().includes("consent.google"));
         if(googleConsentFrame !== undefined)
             await (await googleConsentFrame.$("#introAgreeButton")).click();
+        await page.waitForTimeout(1000);
     },
 
     switchTo3D: async function(page){
@@ -11,7 +12,7 @@ module.exports = {
         await page.evaluate(() => {
             document.querySelector("#globe-toggle > div > button").click();
         });
-        await page.waitForTimeout(5000);
+        await page.waitForTimeout(1000);
     },
 
     tiltView: async function(page){
