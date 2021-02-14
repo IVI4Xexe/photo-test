@@ -100,6 +100,7 @@ async function excecuteRunAsync(options, delay, rotationStep, tiltStep, shellEdg
                 var xMove = x;
                 var yMove = y;
                 
+                await page.waitForTimeout(1000 * delay);
                 await page.screenshot({path: `screenshots/screenshot${options.index}-${i}-${j}.png`});
     
                 if(i % 4 == 0){
