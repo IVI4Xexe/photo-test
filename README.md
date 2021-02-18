@@ -5,6 +5,7 @@
 * `--long=[float]` longitude, mandatory
 * `--debug=[bool: [true|false]]` show mouse in browser and log shell edge movement difference in ./temp.md, default: false
 * `--delay=[uint]` seconds waiting to load google maps, default: 1
+* `--delayBetween=[uint]` seconds waiting between screenshots, default: 1
 * `--parallel=[uint]` parallel browsers, default: 1 
 * `--heightMin=[ufloat]` min height, default: 20.0
 * `--heightMax=[ufloat]` max height, default: 20.0
