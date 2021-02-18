@@ -10,6 +10,7 @@ const argv = require('minimist')(process.argv.slice(2));
 (async () => {
     try{
         const delay = argv.delay != null && parseInt(argv.delay) >= 0 ? parseInt(argv.delay) : 1;
+        const delayBetween = argv.delayBetween != null && parseInt(argv.delayBetween) >= 0 ? parseInt(argv.delayBetween) : 1;
         const parallel = argv.parallel != null && parseInt(argv.parallel) >= 0 ? parseInt(argv.parallel) : 1;
         const heightMin = argv.heightMin != null ? parseFloat(argv.heightMin) : 20.0;
         const heightMax = argv.heightMax != null ? parseFloat(argv.heightMax) : 20.0;
@@ -43,7 +44,7 @@ const argv = require('minimist')(process.argv.slice(2));
         }
     
         for(var runs of runsChunks){
-            var promises = runs.map(option => excecuteRunAsync(option, delay, rotationStep, tiltStep, shellEdge, shellEdgeStep, options.length));
+            var promises = runs.map(option => excecuteRunAsync(option, delay, delayBetween, rotationStep, tiltStep, shellEdge, shellEdgeStep, options.length));
             await Promise.all(promises); 
         }
     }catch(e){
@@ -51,7 +52,7 @@ const argv = require('minimist')(process.argv.slice(2));
     }
 })();
 
-async function excecuteRunAsync(options, delay, rotationStep, tiltStep, shellEdge, shellEdgeStep, promisesLength){
+async function excecuteRunAsync(options, delay, delayBetween, rotationStep, tiltStep, shellEdge, shellEdgeStep, promisesLength){
     try{
         console.log(`promise ${options.index + 1}/${promisesLength} started`)
 
@@ -100,7 +101,7 @@ async function excecuteRunAsync(options, delay, rotationStep, tiltStep, shellEdg
                 var xMove = x;
                 var yMove = y;
                 
-                await page.waitForTimeout(1000);
+                await page.waitForTimeout(1000 * delayBetween);
                 await page.screenshot({path: `screenshots/screenshot${options.index}-${i}-${j}.png`});
     
                 if(i % 4 == 0){
