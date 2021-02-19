@@ -1,4 +1,4 @@
-const { abs } = require('mathjs');
+const { abs, sqrt } = require('mathjs');
 
 const fs = require('fs').promises;
 class DebugOptions{
@@ -22,10 +22,9 @@ class DebugOptions{
         && this.longNew != undefined){
             var latDiff = abs(this.latNew - this.latOld);
             var longDiff = abs(this.longNew - this.longOld);
-            if(latDiff != 0)
-                await writeToDebugFile(latDiff.toFixed(7).replace(".",","));
-            if(longDiff != 0)
-                await writeToDebugFile(longDiff.toFixed(7).replace(".",","));
+            var diff = sqrt(Math.pow(latDiff,2) + Math.pow(longDiff,2))
+            if(diff != 0)
+                await writeToDebugFile(diff.toFixed(7).replace(".",","));
         }
     }
 }
