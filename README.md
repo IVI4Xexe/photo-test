@@ -1,9 +1,11 @@
 # photo-test
 
 ## Requirements:
-* npm i minimist
-* npm i mathjs
-* npm i puppeteer
+* nodejs >= v15.8.0
+* npm >= v7.5.4
+* `npm i minimist`
+* `npm i mathjs`
+* `npm i puppeteer`
 
 ## options:
 
