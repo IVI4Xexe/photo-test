@@ -3,9 +3,9 @@
 ## Requirements:
 * nodejs >= v15.8.0
 * npm >= v7.5.4
-* `npm i minimist`
-* `npm i mathjs`
-* `npm i puppeteer`
+* `npm i minimist`, `npm i mathjs`, `npm i puppeteer`
+or
+* `npm ci`
 
 ## options:
 
