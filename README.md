@@ -1,4 +1,10 @@
 # photo-test
+
+## Requirements:
+* npm i minimist
+* npm i mathjs
+* npm i puppeteer
+
 ## options:
 
 * `--lat=[float]` latitude, mandatory
