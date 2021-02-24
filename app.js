@@ -24,7 +24,6 @@ const debug = argv.debug;
 
 (async () => {
     try{    
-        console.log(debug)
         const options = []
         for(var height = heightMin; height <= heightMax; height+= heightStep){
             for(var step = 0; step < rotationStep; step++){
