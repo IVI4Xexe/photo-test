@@ -1,5 +1,5 @@
 module.exports = {
-    consentToCoockies: async function(page){
+    consentToCookies: async function(page){
         const frames = await page.frames();
         const googleConsentFrame = frames.find(f => f.url().includes("consent.google"));
         if(googleConsentFrame !== undefined)

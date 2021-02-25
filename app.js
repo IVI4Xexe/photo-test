@@ -79,7 +79,7 @@ async function excecuteRunAsync(options, promisesLength){
         const url = `https://www.google.de/maps/@${argv.lat},${argv.long},${options.zoom}z/data=!3m1!1e3?hl=de`;
         await page.goto(url, {"waitUntil" : "networkidle0"});
     
-        await helper.consentToCoockies(page);
+        await helper.consentToCookies(page);
         await helper.switchTo3D(page);
         await helper.removeLabels(page);
         if(options.rot != null){
